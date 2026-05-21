@@ -1,5 +1,9 @@
 class CompletedToDoItemsController < ApplicationController
-  before_action :set_completed_to_do_item, only: %i[update]
+  before_action :set_completed_to_do_item, only: %i[ edit update ]
+
+  # GET /completed_to_do_items/1/edit
+  def edit
+  end
 
   # PATCH/PUT /completed_to_do_items/1 or /completed_to_do_items/1.json
   def update

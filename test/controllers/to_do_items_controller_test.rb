@@ -2,7 +2,7 @@ require "test_helper"
 
 class ToDoItemsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @to_do_item = to_do_items(:one)
+    @to_do_item = to_do_item(:one)
   end
 
   test "should get index" do

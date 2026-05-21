@@ -7,7 +7,7 @@ class ToDoItemControllerTest < ActionDispatch::IntegrationTest
         to_do_item: { title: "Learn controllers", description: "Integration test" }
       }
     end
-    assert_response :created  # or :redirect if you redirect instead of head :created
+    assert_response :created
     item = ToDoItem.last
     assert_equal "Learn controllers", item.title
   end

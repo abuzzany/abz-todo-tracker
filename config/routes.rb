@@ -13,5 +13,4 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  resources :to_do_items, only: [ :create ]
 end

@@ -5,7 +5,7 @@ class ToDoItemControllerTest < ActionDispatch::IntegrationTest
     assert_difference "ToDoItem.count", 1 do
       post to_do_items_path, params: {
         to_do_item: { title: "Learn controllers", description: "Integration test" }
-      }
+      }, as: :json
     end
     assert_response :created
     item = ToDoItem.last
@@ -14,8 +14,8 @@ class ToDoItemControllerTest < ActionDispatch::IntegrationTest
   test "create with invalid data does not save" do
     # once you add validations, e.g. validates :title, presence: true
     assert_no_difference "ToDoItem.count" do
-      post to_do_items_path, params: { to_do_item: { title: "" } }
+      post to_do_items_path, params: { to_do_item: { title: "" } }, as: :json
     end
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
   end
 end

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :completed_to_do_items
   resources :to_do_items
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

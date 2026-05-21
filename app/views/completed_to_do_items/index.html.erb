@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Completed to do items" %>
+
+<h1>Completed to do items</h1>
+
+<div id="completed_to_do_items">
+  <% @completed_to_do_items.each do |completed_to_do_item| %>
+    <%= render completed_to_do_item %>
+    <p>
+      <%= link_to "Show this completed to do item", completed_to_do_item %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New completed to do item", new_completed_to_do_item_path %>

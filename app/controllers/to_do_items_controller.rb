@@ -65,6 +65,6 @@ class ToDoItemsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def to_do_item_params
-      params.expect(to_do_item: [ :title, :description ])
+      params.expect(to_do_item: [ :title, :description, :completed, :completed_at ])
     end
 end

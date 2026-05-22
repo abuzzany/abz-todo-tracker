@@ -22,6 +22,16 @@
   </div>
 
   <div>
+    <%= form.label :completed, style: "display: block" %>
+    <%= form.check_box :completed %>
+  </div>
+
+  <div>
+    <%= form.label :completed_at, style: "display: block" %>
+    <%= form.date_field :completed_at %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>

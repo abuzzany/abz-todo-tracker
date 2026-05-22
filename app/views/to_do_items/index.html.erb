@@ -5,12 +5,30 @@
 <h1>To do items</h1>
 
 <div id="to_do_items">
-  <% @to_do_items.each do |to_do_item| %>
-    <%= render to_do_item %>
-    <p>
-      <%= link_to "Show this to do item", to_do_item %>
-    </p>
-  <% end %>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Completed</th>
+        <th>Completed at</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @to_do_items.each do |to_do_item| %>
+        <tr id="<%= dom_id to_do_item %>">
+          <td><%= to_do_item.title %></td>
+          <td><%= to_do_item.description %></td>
+          <td><%= to_do_item.completed %></td>
+          <td><%= to_do_item.completed_at %></td>
+          <td>
+            <%= link_to "Show this to do item", to_do_item %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
 <%= link_to "New to do item", new_to_do_item_path %>

@@ -1,29 +1,31 @@
-<p style="color: green"><%= notice %></p>
+<% if notice.present? %>
+  <p class="mb-4 rounded-md bg-green-50 px-4 py-2 text-sm text-green-800"><%= notice %></p>
+<% end %>
 
 <% content_for :title, "To do items" %>
 
-<h1>To do items</h1>
+<h1 class="mb-6 text-3xl font-bold text-gray-900">To do items</h1>
 
-<div id="to_do_items">
-  <table>
-    <thead>
+<div id="to_do_items" class="">
+  <table class="">
+    <thead class="">
       <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Completed</th>
-        <th>Completed at</th>
-        <th>Actions</th>
+        <th class="">Title</th>
+        <th class="">Description</th>
+        <th class="">Completed</th>
+        <th class="">Completed at</th>
+        <th class="">Actions</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="">
       <% @to_do_items.each do |to_do_item| %>
-        <tr id="<%= dom_id to_do_item %>">
-          <td><%= to_do_item.title %></td>
-          <td><%= to_do_item.description %></td>
-          <td><%= to_do_item.completed %></td>
-          <td><%= to_do_item.completed_at %></td>
-          <td>
-            <%= link_to "Show this to do item", to_do_item %>
+        <tr id="<%= dom_id to_do_item %>" class="">
+          <td class=""><%= to_do_item.title %></td>
+          <td class=""><%= to_do_item.description %></td>
+          <td class=""<%= to_do_item.completed %></td>
+          <td class=""><%= to_do_item.completed_at %></td>
+          <td class="">
+            <%= link_to "Show", to_do_item, class: "" %>
           </td>
         </tr>
       <% end %>
@@ -31,4 +33,5 @@
   </table>
 </div>
 
-<%= link_to "New to do item", new_to_do_item_path %>
+<%= link_to "New to do item", new_to_do_item_path,
+      class: "" %>

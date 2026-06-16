@@ -4,6 +4,9 @@ class ToDoItemsController < ApplicationController
   # GET /to_do_items or /to_do_items.json
   def index
     @to_do_items = ToDoItem.all
+    @completed_by_day = ToDoItem.where(completed: true)
+                                .group("DATE(completed_at)")
+                                .count
   end
 
   # GET /to_do_items/1 or /to_do_items/1.json

@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include Chartkick::Helper
   def primary_button_to(text, url, options = {})
     link_to text, url, options.merge(class: "rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 #{options[:class]}")
   end

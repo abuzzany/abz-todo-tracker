@@ -7,24 +7,24 @@
 <h1 class="mb-6 text-3xl font-bold text-gray-900">To do items</h1>
 
 <div id="to_do_items" class="">
-  <table class="">
-    <thead class="">
+  <table class="table-fixed border-2 border-solid border-gray-300">
+    <thead class="border-2 border-solid border-gray-300">
       <tr>
-        <th class="">Title</th>
-        <th class="">Description</th>
-        <th class="">Completed</th>
-        <th class="">Completed at</th>
-        <th class="">Actions</th>
+        <th class="w-1/5 px-4 py-3 text-left">Title</th>
+        <th class="w-2/5 px-4 py-3 text-left">Description</th>
+        <th class="w-1/10 px-4 py-3 text-left">Completed</th>
+        <th class="w-1/5 px-4 py-3 text-left">Completed at</th>
+        <th class="w-1/10 px-4 py-3 text-left">Actions</th>
       </tr>
     </thead>
     <tbody class="">
       <% @to_do_items.each do |to_do_item| %>
-        <tr id="<%= dom_id to_do_item %>" class="">
-          <td class=""><%= to_do_item.title %></td>
-          <td class=""><%= to_do_item.description %></td>
-          <td class=""<%= to_do_item.completed %></td>
-          <td class=""><%= to_do_item.completed_at %></td>
-          <td class="">
+        <tr id="<%= dom_id to_do_item %>" class="border-1 border-solid border-gray-300">
+          <td class="px-4 py-3"><%= to_do_item.title %></td>
+          <td class="px-4 py-3"><%= to_do_item.description %></td>
+          <td class="px-4 py-3"><%= to_do_item.completed %></td>
+          <td class="px-4 py-3"><%= to_do_item.completed_at %></td>
+          <td class="px-4 py-3">
             <%= link_to "Show", to_do_item, class: "" %>
           </td>
         </tr>

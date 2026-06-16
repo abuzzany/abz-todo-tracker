@@ -1,10 +1,11 @@
-<p style="color: green"><%= notice %></p>
+<% if notice.present? %>
+  <p class="mb-4 rounded-md bg-green-50 px-4 py-2 text-sm text-green-800"><%= notice %></p>
+<% end %>
 
 <%= render @to_do_item %>
 
-<div>
-  <%= link_to "Edit this to do item", edit_to_do_item_path(@to_do_item) %> |
-  <%= link_to "Back to to do items", to_do_items_path %>
-
-  <%= button_to "Destroy this to do item", @to_do_item, method: :delete %>
+<div class="mt-6 flex items-center gap-4">
+  <%= link_to "Edit", edit_to_do_item_path(@to_do_item), class: "rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700" %>
+  <%= link_to "Back to to do items", to_do_items_path, class: "text-sm font-medium text-blue-600 hover:underline" %>
+  <%= button_to "Destroy", @to_do_item, method: :delete, class: "rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700" %>
 </div>

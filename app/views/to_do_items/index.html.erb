@@ -15,6 +15,7 @@
   <table class="table-fixed border-2 border-solid border-gray-300">
     <thead class="border-2 border-solid border-gray-300">
       <tr>
+        <th class="w-1/5 px-4 py-3 text-left">Category</th>
         <th class="w-1/5 px-4 py-3 text-left">Title</th>
         <th class="w-2/5 px-4 py-3 text-left">Description</th>
         <th class="w-1/10 px-4 py-3 text-left">Completed</th>
@@ -25,6 +26,7 @@
     <tbody class="">
       <% @to_do_items.each do |to_do_item| %>
         <tr id="<%= dom_id to_do_item %>" class="border-1 border-solid border-gray-300">
+          <td class="px-4 py-3"><%= to_do_item.category %></td>
           <td class="px-4 py-3"><%= to_do_item.title %></td>
           <td class="px-4 py-3"><%= to_do_item.description %></td>
           <td class="px-4 py-3"><%= to_do_item.completed %></td>

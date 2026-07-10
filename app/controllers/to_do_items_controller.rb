@@ -4,9 +4,23 @@ class ToDoItemsController < ApplicationController
   # GET /to_do_items or /to_do_items.json
   def index
     @to_do_items = ToDoItem.all
-    @completed_by_day = ToDoItem.where(completed: true)
+
+    completed_by_day = ToDoItem.where(completed: true)
                                 .group("DATE(completed_at)")
                                 .count
+
+    completed_by_category = ToDoItem.where(completed: true)
+                                .group(:category)
+                                .group_by_day(:completed_at)
+                                .count
+
+    by_category = Hash.new { |h, k| h[k] = {} }
+    completed_by_category.each do |(category, date), count|
+      by_category[category][date] = count
+    end
+
+    @completed_chart_data = [{ name: "Total", data: completed_by_day }] +
+      by_category.map { |category, data| { name: category, data: data } }
   end
 
   # GET /to_do_items/1 or /to_do_items/1.json

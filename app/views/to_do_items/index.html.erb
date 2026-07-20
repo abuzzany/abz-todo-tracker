@@ -1,43 +1,64 @@
-<% if notice.present? %>
-  <p class="mb-4 rounded-md bg-green-50 px-4 py-2 text-sm text-green-800"><%= notice %></p>
-<% end %>
-
 <% content_for :title, "To do items" %>
 
-<h1 class="mb-6 text-3xl font-bold text-gray-900">To do items</h1>
+<div class="mx-auto w-full max-w-5xl">
+  <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <p class="mt-1 text-sm text-gray-500">An overview of your tasks and progress.</p>
+    </div>
+    <%= primary_button_to "New to do item", new_to_do_item_path %>
+  </div>
 
-<div class="mb-6">
-  <h2 class="mb-2 text-lg font-semibold text-gray-700">Completed tasks per day</h2>
-  <%= line_chart @completed_chart_data %>
+  <% if notice.present? %>
+    <p class="mb-6 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800"><%= notice %></p>
+  <% end %>
+
+  <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <h2 class="mb-4 text-sm font-medium text-gray-700">Completed tasks per day</h2>
+    <%= line_chart @completed_chart_data %>
+  </div>
+
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <% if @to_do_items.any? %>
+      <div class="overflow-x-auto">
+        <table id="to_do_items" class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50/60 text-xs font-medium uppercase tracking-wide text-gray-500">
+              <th class="px-4 py-3">Category</th>
+              <th class="px-4 py-3">Title</th>
+              <th class="px-4 py-3">Description</th>
+              <th class="px-4 py-3">Completed</th>
+              <th class="px-4 py-3">Completed at</th>
+              <th class="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <% @to_do_items.each do |to_do_item| %>
+              <tr id="<%= dom_id to_do_item %>" class="transition hover:bg-gray-50/60">
+                <td class="px-4 py-3 text-gray-700"><%= to_do_item.category.presence || "—" %></td>
+                <td class="px-4 py-3 font-medium text-gray-900"><%= to_do_item.title %></td>
+                <td class="max-w-xs truncate px-4 py-3 text-gray-500"><%= to_do_item.description %></td>
+                <td class="px-4 py-3">
+                  <% if to_do_item.completed? %>
+                    <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Yes</span>
+                  <% else %>
+                    <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">No</span>
+                  <% end %>
+                </td>
+                <td class="px-4 py-3 text-gray-500"><%= to_do_item.completed_at&.strftime("%b %-d, %Y") || "—" %></td>
+                <td class="px-4 py-3">
+                  <%= link_to "Show", to_do_item, class: "rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 hover:bg-blue-200" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="px-6 py-12 text-center">
+        <p class="text-sm text-gray-500">No to-do items yet.</p>
+        <%= link_to "Create your first one", new_to_do_item_path, class: "mt-2 inline-block text-sm font-medium text-blue-600 hover:underline" %>
+      </div>
+    <% end %>
+  </div>
 </div>
-
-<div id="to_do_items" class="">
-  <table class="table-fixed border-2 border-solid border-gray-300">
-    <thead class="border-2 border-solid border-gray-300">
-      <tr>
-        <th class="w-1/5 px-4 py-3 text-left">Category</th>
-        <th class="w-1/5 px-4 py-3 text-left">Title</th>
-        <th class="w-2/5 px-4 py-3 text-left">Description</th>
-        <th class="w-1/10 px-4 py-3 text-left">Completed</th>
-        <th class="w-1/5 px-4 py-3 text-left">Completed at</th>
-        <th class="w-1/10 px-4 py-3 text-left">Actions</th>
-      </tr>
-    </thead>
-    <tbody class="">
-      <% @to_do_items.each do |to_do_item| %>
-        <tr id="<%= dom_id to_do_item %>" class="border-1 border-solid border-gray-300">
-          <td class="px-4 py-3"><%= to_do_item.category %></td>
-          <td class="px-4 py-3"><%= to_do_item.title %></td>
-          <td class="px-4 py-3"><%= to_do_item.description %></td>
-          <td class="px-4 py-3"><%= to_do_item.completed %></td>
-          <td class="px-4 py-3"><%= to_do_item.completed_at %></td>
-          <td class="px-4 py-3">
-            <%= link_to "Show", to_do_item, class: "rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 hover:bg-blue-200" %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
-
-<%= primary_button_to "New to do item", new_to_do_item_path, class: "mt-4 self-start inline-block" %>

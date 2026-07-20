@@ -26,9 +26,9 @@
             <tr class="border-b border-gray-200 bg-gray-50/60 text-xs font-medium uppercase tracking-wide text-gray-500">
               <th class="px-4 py-3">Category</th>
               <th class="px-4 py-3">Title</th>
-              <th class="px-4 py-3">Description</th>
+              <th class="hidden px-4 py-3 md:table-cell">Description</th>
               <th class="px-4 py-3">Completed</th>
-              <th class="px-4 py-3">Completed at</th>
+              <th class="hidden px-4 py-3 sm:table-cell">Completed at</th>
               <th class="px-4 py-3">Actions</th>
             </tr>
           </thead>
@@ -37,7 +37,7 @@
               <tr id="<%= dom_id to_do_item %>" class="transition hover:bg-gray-50/60">
                 <td class="px-4 py-3 text-gray-700"><%= to_do_item.category.presence || "—" %></td>
                 <td class="px-4 py-3 font-medium text-gray-900"><%= to_do_item.title %></td>
-                <td class="max-w-xs truncate px-4 py-3 text-gray-500"><%= to_do_item.description %></td>
+                <td class="hidden max-w-xs truncate px-4 py-3 text-gray-500 md:table-cell"><%= to_do_item.description %></td>
                 <td class="px-4 py-3">
                   <% if to_do_item.completed? %>
                     <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Yes</span>
@@ -45,7 +45,7 @@
                     <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">No</span>
                   <% end %>
                 </td>
-                <td class="px-4 py-3 text-gray-500"><%= to_do_item.completed_at&.strftime("%b %-d, %Y") || "—" %></td>
+                <td class="hidden px-4 py-3 text-gray-500 sm:table-cell"><%= to_do_item.completed_at&.strftime("%b %-d, %Y") || "—" %></td>
                 <td class="px-4 py-3">
                   <%= link_to "Show", to_do_item, class: "rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 hover:bg-blue-200" %>
                 </td>

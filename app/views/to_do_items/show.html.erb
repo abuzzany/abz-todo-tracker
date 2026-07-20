@@ -1,11 +1,29 @@
-<% if notice.present? %>
-  <p class="mb-4 rounded-md bg-green-50 px-4 py-2 text-sm text-green-800"><%= notice %></p>
-<% end %>
+<% content_for :title, "To do item" %>
 
-<%= render @to_do_item %>
+<div class="mx-auto w-full max-w-md">
+  <div class="mb-6 text-center">
+    <h1 class="text-2xl font-bold text-gray-900">To-do details</h1>
+    <p class="mt-1 text-sm text-gray-500">View the task information below.</p>
+  </div>
 
-<div class="mt-6 flex items-center gap-4">
-  <%= primary_button_to "Edit", edit_to_do_item_path(@to_do_item) %>
-  <%= link_to "Back to to do items", to_do_items_path, class: "text-sm font-medium text-blue-600 hover:underline" %>
-  <%= button_to "Destroy", @to_do_item, method: :delete, class: "rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700" %>
+  <% if notice.present? %>
+    <p class="mb-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800"><%= notice %></p>
+  <% end %>
+
+  <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+    <%= render @to_do_item %>
+
+    <div class="mt-6 flex items-center gap-3 border-t border-gray-100 pt-6">
+      <div class="flex-1">
+        <%= primary_button_to "Edit", edit_to_do_item_path(@to_do_item), class: "block w-full text-center" %>
+      </div>
+      <div class="flex-1">
+        <%= button_to "Delete", @to_do_item, method: :delete, class: "w-full cursor-pointer rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 text-center">
+    <%= link_to "← Back to to do items", to_do_items_path, class: "text-sm font-medium text-gray-500 hover:text-blue-600" %>
+  </div>
 </div>

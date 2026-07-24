@@ -1,7 +1,7 @@
 <div id="<%= dom_id to_do_item %>" class="space-y-5">
   <div>
     <span class="mb-1.5 block text-sm font-medium text-gray-700">Category</span>
-    <p class="rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900"><%= to_do_item.category.presence || "—" %></p>
+    <p class="rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900"><%= to_do_item.category&.name || "—" %></p>
   </div>
 
   <div>

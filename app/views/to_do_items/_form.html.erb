@@ -11,8 +11,12 @@
   <% end %>
 
   <div>
-    <%= form.label :category, class: "mb-1.5 block text-sm font-medium text-gray-700" %>
-    <%= form.text_field :category, placeholder: "e.g. Personal", class: "w-full rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20" %>
+    <%= form.label :category_id, "Category", class: "mb-1.5 block text-sm font-medium text-gray-700" %>
+    <%= form.collection_select :category_id, Category.order(:name), :id, :name,
+          { include_blank: "Select a category" },
+          class: "w-full rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 transition focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20" %>
+    <%= label_tag :new_category, "Or add a new category", class: "mb-1.5 mt-3 block text-sm font-medium text-gray-700" %>
+    <%= text_field_tag :new_category, nil, placeholder: "e.g. Personal", class: "w-full rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20" %>
   </div>
 
   <div>

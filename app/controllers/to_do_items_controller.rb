@@ -10,7 +10,8 @@ class ToDoItemsController < ApplicationController
                                 .count
 
     completed_by_category = ToDoItem.where(completed: true)
-                                .group(:category)
+                                .joins(:category)
+                                .group("categories.name")
                                 .group_by_day(:completed_at)
                                 .count
 
@@ -38,7 +39,7 @@ class ToDoItemsController < ApplicationController
 
   # POST /to_do_items or /to_do_items.json
   def create
-    @to_do_item = ToDoItem.new(to_do_item_params)
+    @to_do_item = ToDoItem.new(to_do_item_params_with_category)
 
     respond_to do |format|
       if @to_do_item.save
@@ -54,7 +55,7 @@ class ToDoItemsController < ApplicationController
   # PATCH/PUT /to_do_items/1 or /to_do_items/1.json
   def update
     respond_to do |format|
-      if @to_do_item.update(to_do_item_params)
+      if @to_do_item.update(to_do_item_params_with_category)
         format.html { redirect_to @to_do_item, notice: "To do item was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @to_do_item }
       else
@@ -82,6 +83,22 @@ class ToDoItemsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def to_do_item_params
-      params.expect(to_do_item: [ :category, :title, :description, :completed, :completed_at ])
+      params.expect(to_do_item: [ :category_id, :title, :description, :completed, :completed_at ])
+    end
+
+    # Merges in a freshly persisted category when the user typed a new one,
+    # taking priority over whatever was selected in the dropdown.
+    def to_do_item_params_with_category
+      attrs = to_do_item_params
+      new_category_name.present? ? attrs.merge(category_id: find_or_create_category.id) : attrs
+    end
+
+    def new_category_name
+      params[:new_category].to_s.strip
+    end
+
+    def find_or_create_category
+      Category.where("lower(name) = ?", new_category_name.downcase).first ||
+        Category.create!(name: new_category_name)
     end
 end

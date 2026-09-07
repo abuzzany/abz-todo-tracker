@@ -20,8 +20,13 @@ class ToDoItemsController < ApplicationController
       by_category[category][date] = count
     end
 
-    @completed_chart_data = [{ name: "Total", data: completed_by_day }] +
+    @completed_chart_data = [ { name: "Total", data: completed_by_day } ] +
       by_category.map { |category, data| { name: category, data: data } }
+
+    @completed_counts_by_day = ToDoItem.completed_counts_by_day
+    streak = CompletionStreak.new(@completed_counts_by_day.keys)
+    @current_streak = streak.current
+    @longest_streak = streak.longest
   end
 
   # GET /to_do_items/1 or /to_do_items/1.json

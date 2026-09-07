@@ -13,6 +13,48 @@
     <p class="mb-6 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800"><%= notice %></p>
   <% end %>
 
+  <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <p class="text-sm font-medium text-gray-500">Current streak</p>
+      <p class="mt-1 text-3xl font-bold text-gray-900">
+        <span id="current-streak-value"><%= @current_streak %></span>
+        <span class="text-base font-medium text-gray-500"><%= "day".pluralize(@current_streak) %></span>
+      </p>
+    </div>
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <p class="text-sm font-medium text-gray-500">Longest streak</p>
+      <p class="mt-1 text-3xl font-bold text-gray-900">
+        <span id="longest-streak-value"><%= @longest_streak %></span>
+        <span class="text-base font-medium text-gray-500"><%= "day".pluralize(@longest_streak) %></span>
+      </p>
+    </div>
+  </div>
+
+  <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <h2 class="mb-4 text-sm font-medium text-gray-700">Completion streak</h2>
+    <div class="flex gap-2">
+      <div id="completion-heatmap-labels" class="flex flex-col gap-1">
+        <% heatmap_weekday_labels.each do |label| %>
+          <span class="h-3 text-[10px] leading-3 text-gray-400"><%= label %></span>
+        <% end %>
+      </div>
+      <div id="completion-heatmap" class="flex gap-1 overflow-x-auto pb-1">
+        <% heatmap_grid(@completed_counts_by_day).each do |week| %>
+          <div class="flex flex-col gap-1">
+            <% week.each do |cell| %>
+              <span
+                data-heatmap-date="<%= cell[:date] %>"
+                data-heatmap-count="<%= cell[:count] %>"
+                title="<%= cell[:count] ? "#{cell[:date]} · #{pluralize(cell[:count], "task")} completed" : "" %>"
+                class="h-3 w-3 rounded-sm <%= heatmap_cell_class(cell[:level]) %>"
+              ></span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
   <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
     <h2 class="mb-4 text-sm font-medium text-gray-700">Completed tasks per day</h2>
     <%= line_chart @completed_chart_data %>

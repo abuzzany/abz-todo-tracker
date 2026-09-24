@@ -1,34 +1,84 @@
-<p style="color: green"><%= notice %></p>
-
 <% content_for :title, "To do items" %>
 
-<h1>To do items</h1>
+<div class="mx-auto w-full max-w-5xl">
+  <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <p class="mt-1 text-sm text-gray-500">An overview of your tasks and progress.</p>
+    </div>
+    <%= primary_button_to "New to do item", new_to_do_item_path %>
+  </div>
 
-<div id="to_do_items">
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Completed</th>
-        <th>Completed at</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @to_do_items.each do |to_do_item| %>
-        <tr id="<%= dom_id to_do_item %>">
-          <td><%= to_do_item.title %></td>
-          <td><%= to_do_item.description %></td>
-          <td><%= to_do_item.completed %></td>
-          <td><%= to_do_item.completed_at %></td>
-          <td>
-            <%= link_to "Show this to do item", to_do_item %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <% if notice.present? %>
+    <p class="mb-6 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800"><%= notice %></p>
+  <% end %>
+
+  <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <p class="text-sm font-medium text-gray-500">Current streak</p>
+      <p class="mt-1 text-3xl font-bold text-gray-900">
+        <span id="current-streak-value"><%= @current_streak %></span>
+        <span class="text-base font-medium text-gray-500"><%= "day".pluralize(@current_streak) %></span>
+      </p>
+    </div>
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <p class="text-sm font-medium text-gray-500">Longest streak</p>
+      <p class="mt-1 text-3xl font-bold text-gray-900">
+        <span id="longest-streak-value"><%= @longest_streak %></span>
+        <span class="text-base font-medium text-gray-500"><%= "day".pluralize(@longest_streak) %></span>
+      </p>
+    </div>
+  </div>
+
+  <%= render "completion_heatmap" %>
+
+  <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <h2 class="mb-4 text-sm font-medium text-gray-700">Completed tasks per day</h2>
+    <%= line_chart @completed_chart_data %>
+  </div>
+
+  <%= turbo_frame_tag "to_do_items_table", target: "_top", class: "block overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm" do %>
+    <% if @to_do_items.any? %>
+      <div class="overflow-x-auto">
+        <table id="to_do_items" class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50/60 text-xs font-medium uppercase tracking-wide text-gray-500">
+              <th class="px-4 py-3">Category</th>
+              <th class="px-4 py-3">Title</th>
+              <th class="hidden px-4 py-3 md:table-cell">Description</th>
+              <th class="px-4 py-3">Completed</th>
+              <th class="hidden px-4 py-3 sm:table-cell">Completed at</th>
+              <th class="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <% @to_do_items.each do |to_do_item| %>
+              <tr id="<%= dom_id to_do_item %>" class="transition hover:bg-gray-50/60">
+                <td class="px-4 py-3 text-gray-700"><%= to_do_item.category&.name || "—" %></td>
+                <td class="px-4 py-3 font-medium text-gray-900"><%= to_do_item.title %></td>
+                <td class="hidden max-w-xs truncate px-4 py-3 text-gray-500 md:table-cell"><%= to_do_item.description %></td>
+                <td class="px-4 py-3">
+                  <% if to_do_item.completed? %>
+                    <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Yes</span>
+                  <% else %>
+                    <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">No</span>
+                  <% end %>
+                </td>
+                <td class="hidden px-4 py-3 text-gray-500 sm:table-cell"><%= to_do_item.completed_at&.strftime("%b %-d, %Y") || "—" %></td>
+                <td class="px-4 py-3">
+                  <%= link_to "Show", to_do_item, class: "rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 hover:bg-blue-200" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <%= render "pagination", page: @page, total_pages: @total_pages, total_count: @total_count, per_page: @per_page %>
+    <% else %>
+      <div class="px-6 py-12 text-center">
+        <p class="text-sm text-gray-500">No to-do items yet.</p>
+        <%= link_to "Create your first one", new_to_do_item_path, class: "mt-2 inline-block text-sm font-medium text-blue-600 hover:underline" %>
+      </div>
+    <% end %>
+  <% end %>
 </div>
-
-<%= link_to "New to do item", new_to_do_item_path %>

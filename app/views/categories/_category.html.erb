@@ -1,0 +1,11 @@
+<div id="<%= dom_id category %>" class="space-y-5">
+  <div>
+    <span class="mb-1.5 block text-sm font-medium text-gray-700">Name</span>
+    <p class="rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900"><%= category.name %></p>
+  </div>
+
+  <div>
+    <span class="mb-1.5 block text-sm font-medium text-gray-700">To-do items</span>
+    <p class="rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900"><%= pluralize(category.to_do_items.count, "item") %></p>
+  </div>
+</div>

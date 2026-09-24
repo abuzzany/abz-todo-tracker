@@ -1,0 +1,37 @@
+# syntax=docker/dockerfile:1
+
+# Development image: bin/dev + bin/rails test inside Docker. Not for production —
+# see Dockerfile for the production build used by Kamal.
+#
+#   docker compose up          # app on http://localhost:3000
+#   docker compose run --rm test
+
+ARG RUBY_VERSION=4.0.1
+FROM docker.io/library/ruby:$RUBY_VERSION-slim
+
+WORKDIR /rails
+
+# System deps: build-essential/libyaml-dev/pkg-config to build native gems, curl/git for
+# bundler, libjemalloc2/libvips/sqlite3 to match the runtime image.
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+      build-essential curl git libjemalloc2 libvips libyaml-dev pkg-config sqlite3 && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+ENV RAILS_ENV="development" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    LD_PRELOAD="/usr/local/lib/libjemalloc.so"
+RUN ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so
+
+# Install gems separately so this layer is cached until Gemfile(.lock) changes; the app
+# code itself is bind-mounted at runtime (see docker-compose.yml), not copied here.
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Pre-install foreman so bin/dev doesn't try to gem-install it (and hit the network) on
+# every container start.
+RUN gem install foreman
+
+EXPOSE 3000
+
+CMD ["bin/dev"]

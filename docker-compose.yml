@@ -1,0 +1,34 @@
+# Local development only — builds Dockerfile.dev and bind-mounts the repo for live reload.
+# Not used for production; that's Dockerfile + Kamal (see config/deploy.yml).
+#
+#   docker compose up              # app at http://localhost:3000 (server + tailwind watch)
+#   docker compose run --rm test   # bin/rails test (unit/controller; no system tests — no browser here)
+#
+# Runs Procfile.dev.docker (not Procfile.dev / bin/dev) via foreman directly: same two
+# processes, but the CSS watcher passes tailwindcss's `always` flag so it keeps watching
+# without a TTY, and the server binds 0.0.0.0 so the container's port mapping can reach it.
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "rm -f tmp/pids/server.pid && bin/rails db:prepare && PORT=3000 foreman start -f Procfile.dev.docker"
+    volumes:
+      - .:/rails
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV: development
+      BINDING: 0.0.0.0
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    profiles: [ test ]
+    command: bash -c "bin/rails db:prepare && bin/rails test"
+    volumes:
+      - .:/rails
+    environment:
+      RAILS_ENV: test

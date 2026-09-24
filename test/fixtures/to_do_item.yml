@@ -5,7 +5,7 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
-  category: Personal
+  category: personal
   title: Buy milk
   description: 2% organic
   completed: false

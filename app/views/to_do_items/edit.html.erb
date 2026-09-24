@@ -1,10 +1,18 @@
 <% content_for :title, "Editing to do item" %>
 
-<h1 class="mb-6 text-3xl font-bold text-gray-900">Editing to do item</h1>
+<div class="mx-auto w-full max-w-md">
+  <div class="mb-6 text-center">
+    <h1 class="text-2xl font-bold text-gray-900">Edit to-do</h1>
+    <p class="mt-1 text-sm text-gray-500">Update the details of this task.</p>
+  </div>
 
-<%= render "form", to_do_item: @to_do_item %>
+  <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+    <%= render "form", to_do_item: @to_do_item %>
+  </div>
 
-<div class="mt-4 flex items-center gap-4">
-  <%= link_to "Show this to do item", @to_do_item, class: "text-sm font-medium text-blue-600 hover:underline" %>
-  <%= link_to "Back to to do items", to_do_items_path, class: "text-sm font-medium text-blue-600 hover:underline" %>
+  <div class="mt-6 flex items-center justify-center gap-3 text-center">
+    <%= link_to "Show this to do item", @to_do_item, class: "text-sm font-medium text-gray-500 hover:text-blue-600" %>
+    <span class="text-gray-300">·</span>
+    <%= link_to "← Back to to do items", to_do_items_path, class: "text-sm font-medium text-gray-500 hover:text-blue-600" %>
+  </div>
 </div>

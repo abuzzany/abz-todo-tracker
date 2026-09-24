@@ -60,7 +60,7 @@
     <%= line_chart @completed_chart_data %>
   </div>
 
-  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+  <%= turbo_frame_tag "to_do_items_table", target: "_top", class: "block overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm" do %>
     <% if @to_do_items.any? %>
       <div class="overflow-x-auto">
         <table id="to_do_items" class="w-full text-left text-sm">
@@ -96,11 +96,12 @@
           </tbody>
         </table>
       </div>
+      <%= render "pagination", page: @page, total_pages: @total_pages, total_count: @total_count, per_page: @per_page %>
     <% else %>
       <div class="px-6 py-12 text-center">
         <p class="text-sm text-gray-500">No to-do items yet.</p>
         <%= link_to "Create your first one", new_to_do_item_path, class: "mt-2 inline-block text-sm font-medium text-blue-600 hover:underline" %>
       </div>
     <% end %>
-  </div>
+  <% end %>
 </div>

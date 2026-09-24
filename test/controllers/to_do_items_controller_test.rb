@@ -23,6 +23,54 @@ class ToDoItemsControllerTest < ActionDispatch::IntegrationTest
     assert_select "#completion-heatmap [data-heatmap-date='#{today}'][data-heatmap-count='1']"
   end
 
+  test "index shows 15 items per page by default" do
+    create_items(20) # plus 2 fixtures = 22 items
+
+    get to_do_items_url
+
+    assert_select "#to_do_items tbody tr", count: 15
+    assert_select "#to_do_items_pagination", text: /Showing\s+1–15\s+of\s+22/
+    assert_select "#current-page", text: "1"
+    assert_select "a[rel=next][href=?]", to_do_items_path(page: 2)
+    assert_select "a[rel=prev]", count: 0
+  end
+
+  test "index shows the remaining items on the last page" do
+    create_items(20)
+
+    get to_do_items_url(page: 2)
+
+    assert_select "#to_do_items tbody tr", count: 7
+    assert_select "#to_do_items_pagination", text: /Showing\s+16–22\s+of\s+22/
+    assert_select "a[rel=prev][href=?]", to_do_items_path(page: 1)
+    assert_select "a[rel=next]", count: 0
+  end
+
+  test "index clamps an out-of-range page to the last page" do
+    create_items(20)
+
+    get to_do_items_url(page: 99)
+
+    assert_response :success
+    assert_select "#current-page", text: "2"
+  end
+
+  test "index clamps an invalid page to the first page" do
+    create_items(20)
+
+    get to_do_items_url(page: "abc")
+
+    assert_response :success
+    assert_select "#current-page", text: "1"
+  end
+
+  test "index hides pagination when everything fits on one page" do
+    get to_do_items_url
+
+    assert_select "#to_do_items tbody tr", count: ToDoItem.count
+    assert_select "#to_do_items_pagination", count: 0
+  end
+
   test "should get new" do
     get new_to_do_item_url
     assert_response :success
@@ -127,4 +175,9 @@ class ToDoItemsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :no_content
   end
+
+  private
+    def create_items(count)
+      count.times { |i| ToDoItem.create!(title: "Paginated item #{i + 1}") }
+    end
 end

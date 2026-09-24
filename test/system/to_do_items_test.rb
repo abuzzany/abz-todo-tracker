@@ -26,6 +26,26 @@ class ToDoItemsTest < ApplicationSystemTestCase
     assert_selector "#completion-heatmap-labels", text: "Sat"
   end
 
+  test "paging through to do items" do
+    20.times { |i| ToDoItem.create!(title: "Paginated item #{i + 1}") }
+
+    visit to_do_items_url
+    assert_selector "#to_do_items tbody tr", count: 15
+    assert_no_text "Paginated item 20"
+
+    click_on "Next"
+
+    assert_selector "#current-page", text: "2"
+    assert_selector "#to_do_items tbody tr", count: 7
+    assert_text "Paginated item 20"
+    assert_current_path to_do_items_path(page: 2)
+
+    click_on "Previous"
+
+    assert_selector "#current-page", text: "1"
+    assert_selector "#to_do_items tbody tr", count: 15
+  end
+
   test "creating a to do item" do
     visit to_do_items_url
     click_on "New to do item"

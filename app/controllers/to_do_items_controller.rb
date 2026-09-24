@@ -1,9 +1,11 @@
 class ToDoItemsController < ApplicationController
+  ITEMS_PER_PAGE = 15
+
   before_action :set_to_do_item, only: %i[ show edit update destroy ]
 
   # GET /to_do_items or /to_do_items.json
   def index
-    @to_do_items = ToDoItem.all
+    paginate_to_do_items
 
     completed_by_day = ToDoItem.where(completed: true)
                                 .group("DATE(completed_at)")
@@ -81,6 +83,17 @@ class ToDoItemsController < ApplicationController
   end
 
   private
+    # Loads one page of items into @to_do_items. Out-of-range or invalid
+    # ?page= values are clamped to the first/last page instead of erroring.
+    def paginate_to_do_items
+      @per_page = ITEMS_PER_PAGE
+      scope = ToDoItem.includes(:category).order(:id)
+      @total_count = scope.count
+      @total_pages = [ (@total_count / @per_page.to_f).ceil, 1 ].max
+      @page = params[:page].to_i.clamp(1, @total_pages)
+      @to_do_items = scope.limit(@per_page).offset((@page - 1) * @per_page)
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_to_do_item
       @to_do_item = ToDoItem.find(params.expect(:id))

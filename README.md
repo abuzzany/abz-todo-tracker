@@ -11,10 +11,31 @@ categories and a completion dashboard.
   existing category or type a new one inline when creating/editing an item.
   Deleting a category doesn't delete its items — they're just nullified back
   to "no category" (`Category has_many :to_do_items, dependent: :nullify`)
-- **Dashboard chart** on the index page showing items completed per day,
-  broken down by category (via [chartkick](https://chartkick.com/) and
-  [groupdate](https://github.com/ankane/groupdate))
-- JSON API for to-do items (`.json` variants of index/show, via Jbuilder)
+- **Categories section** (`/categories`) to list, create, rename, and delete
+  categories, with a count of the to-do items in each
+- **Dashboard** (the root page, `to_do_items#index`):
+  - **Completion streaks**: your current and longest run of consecutive days
+    with at least one completed item. The current streak still counts through
+    yesterday until today is over, so it doesn't drop to zero in the morning
+    (`CompletionStreak`)
+  - **Completion heatmap**: a GitHub-style grid of the last 52 weeks, with
+    month labels and a Less/More legend. Hover a cell to see the full date and
+    a per-category breakdown. On narrow screens it scrolls and opens on the
+    most recent weeks
+  - **Category filter** for the heatmap: All/per-category buttons
+    (`?streak_category_id=`) that narrow the heatmap and show that
+    category's current and longest streak. The filter swaps in a Turbo Frame
+    without reloading the rest of the page
+  - **Completions chart** showing items completed per day, as a total and
+    broken down by category (via [chartkick](https://chartkick.com/) and
+    [groupdate](https://github.com/ankane/groupdate))
+  - **Paginated items table**: 15 items per page with Previous/Next links. The
+    table is its own Turbo Frame, so paging doesn't reload the streaks, heatmap,
+    or chart, and the selected streak category is kept. Invalid or
+    out-of-range `?page=` values are clamped instead of raising an error
+- JSON API for to-do items and categories (`.json` variants of the standard
+  resource routes, via Jbuilder). `GET /to_do_items.json` is paginated the same
+  way as the HTML table
 
 ## Tech stack
 
@@ -48,6 +69,29 @@ bin/dev
 This starts the Rails server and the Tailwind CSS watcher together (see
 `Procfile.dev`). The app is served at http://localhost:3000.
 
+### Sample data
+
+```bash
+bin/rails db:seed
+```
+
+This loads sample categories, open to-dos, and about 13 weeks of completion
+history, including a current streak that ends today and a longer 16-day
+streak in the past, so the dashboard has data to show. It only runs in
+development, and it's idempotent: running it again updates the sample
+records instead of creating duplicates.
+
+### Docker (local development)
+
+```bash
+docker compose up                # app at http://localhost:3000 (server + Tailwind watcher)
+docker compose run --rm test     # bin/rails test (no system tests: there's no browser in the container)
+```
+
+This builds `Dockerfile.dev` and bind-mounts the repo, so code changes reload
+live. It runs `Procfile.dev.docker` instead of `bin/dev`. The production image
+is the separate `Dockerfile`, which is deployed with Kamal.
+
 ## Running tests
 
 ```bash
@@ -78,6 +122,9 @@ Category
 ToDoItem
   belongs_to :category, optional: true
   validates_presence_of :title
+
+CompletionStreak   # plain Ruby object, not a table
+  #current / #longest from the dates on which items were completed
 ```
 
 ## Deployment

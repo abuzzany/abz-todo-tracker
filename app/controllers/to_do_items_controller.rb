@@ -29,6 +29,8 @@ class ToDoItemsController < ApplicationController
     streak = CompletionStreak.new(@completed_counts_by_day.keys)
     @current_streak = streak.current
     @longest_streak = streak.longest
+
+    load_completion_heatmap
   end
 
   # GET /to_do_items/1 or /to_do_items/1.json
@@ -83,6 +85,23 @@ class ToDoItemsController < ApplicationController
   end
 
   private
+    # Heatmap data, optionally narrowed to one category via
+    # ?streak_category_id=. An unknown id falls back to all categories.
+    def load_completion_heatmap
+      @streak_categories = Category.order(:name)
+      @streak_category = @streak_categories.find { |category| category.id.to_s == params[:streak_category_id].to_s }
+      @heatmap_breakdown_by_day = ToDoItem.completed_counts_by_day_and_category
+
+      if @streak_category
+        @heatmap_counts_by_day = @heatmap_breakdown_by_day.filter_map do |date, counts|
+          [ date, counts[@streak_category.name] ] if counts[@streak_category.name]
+        end.to_h
+        @heatmap_streak = CompletionStreak.new(@heatmap_counts_by_day.keys)
+      else
+        @heatmap_counts_by_day = @completed_counts_by_day
+      end
+    end
+
     # Loads one page of items into @to_do_items. Out-of-range or invalid
     # ?page= values are clamped to the first/last page instead of erroring.
     def paginate_to_do_items

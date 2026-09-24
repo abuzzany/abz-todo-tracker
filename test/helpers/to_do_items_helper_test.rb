@@ -65,4 +65,36 @@ class ToDoItemsHelperTest < ActionView::TestCase
     assert_equal 7, labels.length
     assert_equal first_week.map { |cell| cell[:date].strftime("%a") }, labels
   end
+
+  test "heatmap_grid covers 52 weeks by default" do
+    assert_equal 52, heatmap_grid({}, today: Date.new(2026, 9, 9)).length
+  end
+
+  test "heatmap_month_label names the month only for the week containing its 1st day" do
+    weeks = heatmap_grid({}, weeks: 3, today: Date.new(2026, 10, 7)) # Sep 20 – Oct 10
+
+    assert_equal [ nil, "Oct", nil ], weeks.map { |week| heatmap_month_label(week) }
+  end
+
+  test "heatmap_cell_title shows the weekday, total, and per-category breakdown" do
+    date = Date.new(2026, 9, 9)
+    breakdown = { date => { "Personal" => 1, "Work" => 2, nil => 1 } }
+
+    title = heatmap_cell_title({ date: date, count: 4 }, breakdown)
+
+    assert_equal "Wednesday, Sep 9, 2026 · 4 tasks completed (Work: 2, No category: 1, Personal: 1)", title
+  end
+
+  test "heatmap_cell_title names the category when filtered to one" do
+    title = heatmap_cell_title({ date: Date.new(2026, 9, 9), count: 1 }, {}, category: categories(:work))
+
+    assert_equal "Wednesday, Sep 9, 2026 · 1 Work task completed", title
+  end
+
+  test "heatmap_cell_title has no breakdown on days without completions and is blank for future days" do
+    date = Date.new(2026, 9, 9)
+
+    assert_equal "Wednesday, Sep 9, 2026 · 0 tasks completed", heatmap_cell_title({ date: date, count: 0 }, {})
+    assert_equal "", heatmap_cell_title({ date: date, count: nil }, {})
+  end
 end

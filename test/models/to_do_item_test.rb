@@ -63,4 +63,18 @@ class ToDoItemTest < ActiveSupport::TestCase
 
     assert_empty ToDoItem.completed_counts_by_day
   end
+
+  test "completed_counts_by_day_and_category breaks down completions per day by category name" do
+    today = Date.current
+    ToDoItem.create!(title: "Work 1", completed: true, completed_at: today, category: categories(:work))
+    ToDoItem.create!(title: "Work 2", completed: true, completed_at: today, category: categories(:work))
+    ToDoItem.create!(title: "Personal", completed: true, completed_at: today, category: categories(:personal))
+    ToDoItem.create!(title: "No category", completed: true, completed_at: today - 1)
+    ToDoItem.create!(title: "Not done", completed: false, completed_at: today, category: categories(:work))
+
+    counts = ToDoItem.completed_counts_by_day_and_category
+
+    assert_equal({ "Work" => 2, "Personal" => 1 }, counts[today])
+    assert_equal({ nil => 1 }, counts[today - 1])
+  end
 end

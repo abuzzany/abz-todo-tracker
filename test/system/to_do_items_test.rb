@@ -22,8 +22,27 @@ class ToDoItemsTest < ApplicationSystemTestCase
     assert_selector "#current-streak-value", text: "2"
     assert_selector "#longest-streak-value", text: "2"
     assert_selector "#completion-heatmap [data-heatmap-date='#{today}'][data-heatmap-count='1']", visible: :all
-    assert_selector "#completion-heatmap-labels", text: "Sun"
-    assert_selector "#completion-heatmap-labels", text: "Sat"
+    assert_selector "#completion-heatmap .heatmap-weekday-label", text: "Sun"
+    assert_selector "#completion-heatmap .heatmap-weekday-label", text: "Sat"
+  end
+
+  test "filtering the completion streak by category" do
+    today = Date.current
+    ToDoItem.create!(title: "Work today", completed: true, completed_at: today, category: categories(:work))
+    ToDoItem.create!(title: "Personal today", completed: true, completed_at: today, category: categories(:personal))
+
+    visit to_do_items_url
+    assert_selector "#completion-heatmap [data-heatmap-date='#{today}'][data-heatmap-count='2']", visible: :all
+
+    within("#streak-category-filter") { click_on "Work" }
+
+    assert_selector "#category-streak", text: "Work: current 1 day"
+    assert_selector "#completion-heatmap [data-heatmap-date='#{today}'][data-heatmap-count='1']", visible: :all
+    assert_current_path to_do_items_path(streak_category_id: categories(:work).id)
+
+    within("#streak-category-filter") { click_on "All" }
+
+    assert_no_selector "#category-streak"
   end
 
   test "paging through to do items" do

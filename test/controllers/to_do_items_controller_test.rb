@@ -71,6 +71,44 @@ class ToDoItemsControllerTest < ActionDispatch::IntegrationTest
     assert_select "#to_do_items_pagination", count: 0
   end
 
+  test "index narrows the heatmap and streak to the selected category" do
+    today = Date.current
+    ToDoItem.create!(title: "Work today", completed: true, completed_at: today, category: categories(:work))
+    ToDoItem.create!(title: "Personal today", completed: true, completed_at: today, category: categories(:personal))
+    ToDoItem.create!(title: "Personal yesterday", completed: true, completed_at: today - 1, category: categories(:personal))
+
+    get to_do_items_url(streak_category_id: categories(:personal).id)
+
+    assert_select "#completion-heatmap [data-heatmap-date='#{today}'][data-heatmap-count='1']"
+    assert_select "#completion-heatmap [data-heatmap-date='#{today - 1}'][data-heatmap-count='1']"
+    assert_select "#category-streak", text: /Personal: current 2 days\s+·\s+longest 2 days/
+    assert_select "#streak-category-filter a[aria-current=true]", text: "Personal"
+    # The overall streak cards are not filtered.
+    assert_select "#current-streak-value", text: "2"
+  end
+
+  test "index shows all categories in the heatmap by default or for an unknown category" do
+    today = Date.current
+    ToDoItem.create!(title: "Work today", completed: true, completed_at: today, category: categories(:work))
+    ToDoItem.create!(title: "Personal today", completed: true, completed_at: today, category: categories(:personal))
+
+    [ {}, { streak_category_id: "999999" } ].each do |params|
+      get to_do_items_url(params)
+
+      assert_select "#completion-heatmap [data-heatmap-date='#{today}'][data-heatmap-count='2']"
+      assert_select "#category-streak", count: 0
+      assert_select "#streak-category-filter a[aria-current=true]", text: "All"
+    end
+  end
+
+  test "pagination links keep the selected streak category" do
+    create_items(20)
+
+    get to_do_items_url(streak_category_id: categories(:work).id)
+
+    assert_select "a[rel=next][href=?]", to_do_items_path(streak_category_id: categories(:work).id, page: 2)
+  end
+
   test "should get new" do
     get new_to_do_item_url
     assert_response :success

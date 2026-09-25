@@ -2,6 +2,7 @@ require "application_system_test_case"
 
 class CategoriesTest < ApplicationSystemTestCase
   setup do
+    sign_in users(:one)
     @category = categories(:personal)
   end
 

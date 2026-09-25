@@ -7,6 +7,11 @@
 
 return unless Rails.env.development?
 
+# Demo account for signing in locally (every page requires a signed-in user).
+User.find_or_create_by!(email: "demo@example.com") do |user|
+  user.password = "password123"
+end
+
 categories = %w[Work Personal Health Learning Errands].index_with do |name|
   Category.find_or_create_by!(name: name)
 end

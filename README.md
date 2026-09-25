@@ -36,6 +36,12 @@ categories and a completion dashboard.
 - JSON API for to-do items and categories (`.json` variants of the standard
   resource routes, via Jbuilder). `GET /to_do_items.json` is paginated the same
   way as the HTML table
+- **Authentication** with [Devise](https://github.com/heartcombo/devise):
+  every page requires a signed-in user. Visitors can sign up, log in (with
+  "remember me"), log out, and change their email or password on the account
+  page. Signed-out JSON requests get a `401`. Password reset by email isn't
+  enabled yet because production mail delivery isn't configured. To-do items
+  and categories are shared by all users, not scoped per user
 
 ## Tech stack
 
@@ -80,6 +86,9 @@ history, including a current streak that ends today and a longer 16-day
 streak in the past, so the dashboard has data to show. It only runs in
 development, and it's idempotent: running it again updates the sample
 records instead of creating duplicates.
+
+It also creates a demo account you can log in with: `demo@example.com` /
+`password123`.
 
 ### Docker (local development)
 

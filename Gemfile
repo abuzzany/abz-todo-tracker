@@ -45,6 +45,9 @@ gem "image_processing", "~> 2.0"
 gem "chartkick"
 gem "groupdate"
 
+# User authentication [https://github.com/heartcombo/devise]
+gem "devise", "~> 5.0"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

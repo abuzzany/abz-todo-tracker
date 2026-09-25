@@ -2,6 +2,7 @@ require "test_helper"
 
 class ToDoItemsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    sign_in users(:one)
     @to_do_item = to_do_item(:one)
   end
 

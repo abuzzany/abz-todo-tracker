@@ -1,0 +1,37 @@
+<% content_for :title, "Log in" %>
+
+<div class="mx-auto w-full max-w-md">
+  <div class="mb-6 text-center">
+    <h1 class="text-2xl font-bold text-gray-900">Log in</h1>
+    <p class="mt-1 text-sm text-gray-500">Sign in to see your to-dos.</p>
+  </div>
+
+  <%= render "devise/shared/flash" %>
+
+  <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+      <div>
+        <%= f.label :email, class: "mb-1.5 block text-sm font-medium text-gray-700" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20" %>
+      </div>
+
+      <div>
+        <%= f.label :password, class: "mb-1.5 block text-sm font-medium text-gray-700" %>
+        <%= f.password_field :password, autocomplete: "current-password", class: "w-full rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20" %>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+        <div class="flex items-center gap-2">
+          <%= f.check_box :remember_me, class: "size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500/40" %>
+          <%= f.label :remember_me, class: "text-sm text-gray-700" %>
+        </div>
+      <% end %>
+
+      <div class="pt-2">
+        <%= f.submit "Log in", class: "w-full cursor-pointer rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/40" %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= render "devise/shared/links" %>
+</div>

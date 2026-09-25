@@ -2,6 +2,7 @@ require "application_system_test_case"
 
 class ToDoItemsTest < ApplicationSystemTestCase
   setup do
+    sign_in users(:one)
     @to_do_item = to_do_item(:one)
   end
 
